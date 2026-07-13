@@ -427,17 +427,17 @@ sequenceDiagram
 
 ```mermaid
 flowchart TD
-    A[Fetch .dedi file] --> B{"1 - schema shape OK"}
-    B -- no --> X[Reject]
-    B -- yes --> C{"2 - signature verifies vs embedded key"}
-    C -- no --> X
-    C -- yes --> D{"3 - key is in the domain's well-known keys"}
-    D -- no --> U[Integrity-valid but NOT authenticated]
-    D -- yes --> E{"4 - within next_update"}
-    E -- no --> H[Stale - re-fetch source_url]
-    E -- yes --> F{"5 - registry state is live"}
-    F -- no --> I[Not authoritative]
-    F -- yes --> K[Index / serve / accept]
+    A[Fetch file] --> B{1 schema ok}
+    B -->|no| BR[Reject, bad shape]
+    B -->|yes| C{2 signature ok}
+    C -->|no| CR[Reject, bad signature]
+    C -->|yes| D{3 key in well-known}
+    D -->|no| DR[Integrity ok, not authenticated]
+    D -->|yes| E{4 within next_update}
+    E -->|no| ER[Stale, re-fetch source]
+    E -->|yes| F{5 registry state live}
+    F -->|no| FR[Not authoritative]
+    F -->|yes| K[Index, serve, accept]
 ```
 
 ### A.6 Query / Lookup
