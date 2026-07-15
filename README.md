@@ -49,7 +49,7 @@ Provenance-Enabled: Provides authorship of entries and a history of changes, all
 
 ## How Does DeDi Enable This?
 
-At its core, DeDi is an open protocol that defines universal, standardized API specifications for accessing any public registry, enabling seamless lookup and querying across diverse information sources. By providing open-source API specifications, DeDi eliminates the need for costly custom integrations, allowing registrars to implement a unified and consistent interface for public information access.
+At its core, DeDi is an open protocol for publishing public directories so that any party can discover and verify them. It standardizes two things: the shape of the data, as a signed, self-describing directory that any party can host; and the interface for reading it, as universal `/dedi/lookup` and `/dedi/query` specifications enabling seamless lookup and querying across diverse information sources. By providing both as open specifications, DeDi eliminates the need for costly custom integrations, giving registrars a unified and consistent interface for public information access without prescribing which party operates the infrastructure.
 
 DeDi’s information architecture is organized around three key constructs:
 
@@ -60,6 +60,25 @@ DeDi’s information architecture is organized around three key constructs:
 - **Records:** The actual values or pointers to information.
 
 > Important Note: The Decentralized Directory Protocol is not a software product or a rigid implementation manual—it is an open standard designed to enable trust in digital transactions by providing a universal, interoperable foundation for accessing and verifying public information.
+
+## Adopting DeDi
+
+A publisher adopts DeDi by publishing signed `.dedi` files. There is no further requirement. The publisher produces one self-contained, signed `.dedi` file per directory and serves a signed `/.well-known/dedi.json` manifest declaring its signing key. No infrastructure need be operated: any organization with a domain and a signing key can comply. See **[docs/publishing-dedi-files.md](docs/publishing-dedi-files.md)**.
+
+The publisher chooses where those files are hosted. The file and its signature are identical in either case:
+
+- **An endpoint the publisher controls**, such as its own website, a source repository, or a public file-sharing service. This is the baseline.
+- **A DeDi server**, with which the files may instead be deposited and hosted on the publisher's behalf, such as dedi.global.
+
+The choice of host does not affect verification: a verifier evaluates the publisher's signature against the key declared at the publisher's well-known, irrespective of which party serves the file. Hosting is a deployment concern and carries no weight in the trust model.
+
+Adopting DeDi therefore does not require operating a DeDi server. It requires publishing a small number of signed files to an endpoint the publisher already controls.
+
+## DeDi Servers
+
+A DeDi server is a distinct role, not a mode of publisher compliance. It is optional infrastructure operated by any party that wishes to serve published files at scale. A server discovers and verifies published `.dedi` files, indexes them, and exposes the DeDi API — `/dedi/lookup` and `/dedi/query` — across many publishers. It may additionally offer capabilities that static files do not provide, such as cross-directory search, version history, conditional fetch, and availability guarantees.
+
+A server relays the publisher's original signature unaltered and does not substitute its own. A relying party therefore obtains an equivalent cryptographic guarantee whether it queries a server or retrieves the file directly from the publisher. Servers are caches and indexes; they are not authorities.
 
 ## Use Cases
 
@@ -75,7 +94,7 @@ These patterns share one interface, so they compose — a membership record can 
 
 ## dedi.global – ready to use solution
 
-To accelerate and simplify adoption, a ready-to-use hosted platform – dedi.global, is offered by the Network for Humanity Foundation. This philanthropic initiative allows registrars to effortlessly publish and manage their directories on a robust decentralized infrastructure, leveraging blockchain for automated governance, scalability, and enhanced trust—complementing and fully aligned with the open DeDi protocol.
+For registrars who would rather not host and manage files themselves, a ready-to-use hosted platform – dedi.global, is offered by the Network for Humanity Foundation. This philanthropic initiative allows registrars to effortlessly publish and manage their directories on a robust decentralized infrastructure, leveraging blockchain for automated governance, scalability, and enhanced trust—complementing and fully aligned with the open DeDi protocol.
 
 By adopting the DeDi Protocol, relying parties can maintain a list of trusted domains and seamlessly query and look up public information, verifying digital assets and identities with unprecedented ease and confidence.
 
@@ -85,9 +104,10 @@ DeDi supports the co-existence of multiple data standards and schemas (e.g., VC 
 
 Your participation is crucial to the success of this initiative. Here's how you can help us build a more secure digital future:
 
-- Claim Your Namespace: Register your organization on dedi.global. Publish your first directory!
-- Adopt the DeDi Protocol to start looking up and querying public records in verification flows. Connect your verification systems to dedi.global.
-- Implement the DeDi APIs in your existing public registries to make them accessible.
+- **Publish your first directory.** No infrastructure is required: sign a `.dedi` file, host it on an endpoint you already control, and serve a `/.well-known/dedi.json`. Begin with **[docs/publishing-dedi-files.md](docs/publishing-dedi-files.md)** and the **[examples/](examples/)**.
+- **If you would rather not host the files yourself**, claim your namespace on dedi.global and publish your directory there.
+- **Adopt the DeDi Protocol** to look up and query public records in your verification flows, against any publisher's files or any DeDi server.
+- **If you already operate a public registry**, implement the DeDi APIs on it to make it accessible, or publish `.dedi` files alongside it.
 
 Let’s co-create a future where trust is seamlessly integrated into every digital transaction.
 
