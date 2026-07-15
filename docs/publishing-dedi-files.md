@@ -10,30 +10,30 @@ Status: **Draft** · Target: `docs/publishing-dedi-files.md` in the DeDi Protoco
 
 ### 1.1 Background
 
-DeDi is an open protocol for publishing public directories: registries of public information such as
+DeDi protocol is an open protocol for publishing public directories: registries of public information such as
 public key directories, revocation and sanctions lists, membership rolls, professional registers, and
 company or bank directories. Each such directory is conventionally exposed through a bespoke
 interface, obliging every relying party to integrate with each source independently. DeDi defines a
-single machine-readable interface for these directories, so that a relying party may discover a
+unified machine-readable convention for these directories, so that a relying party may discover a
 directory it has not previously encountered and evaluate its contents against the three pillars of
 trust: integrity (the data has not been modified since issuance), validity (the data is current and
 has not been revoked), and authenticity (the data originates from the source it names).
 
-This document does not alter the DeDi information model, which remains Namespace → Registry
+This document does not alter the previousl DeDi information model, which remains Namespace → Registry
 (Directory) → Record.
 
 ### 1.2 Adopting DeDi
 
-A publisher adopts DeDi by publishing signed `.dedi` files. No further requirement applies. The
-publisher produces one self-contained, signed `.dedi` file per registry (§5) and serves a signed
-`/.well-known/dedi.json` manifest declaring its signing key or keys (§6). Operation of a service is
-not required at any point. The normative statement of this requirement is given in §13.
+**A publisher adopts DeDi by publishing signed `.dedi` files.** No further requirement applies. The
+publisher produces one self-contained, signed `.dedi` file per registry and serves a signed
+`/.well-known/dedi.json` manifest declaring its signing key or keys. Operation of a service is
+not required at any point.
 
 A publisher MAY host its files at any location under its control, including its own web server, a
 source repository, or a public file-sharing service. A publisher MAY instead deposit its files with a
 DeDi server that hosts them on its behalf. The choice of host does not affect verification: a verifier
 evaluates the publisher's signature against the key declared in the publisher's manifest, irrespective
-of which party serves the bytes (§7.3). Hosting is therefore a deployment concern and carries no
+of which party serves the bytes. Hosting is therefore a deployment concern and carries no
 weight in the trust model.
 
 ### 1.3 DeDi servers
@@ -47,21 +47,18 @@ guarantees.
 
 | | Publisher | DeDi server |
 |---|---|---|
-| Produces | `.dedi` files and a signed manifest | an index and the DeDi API |
+| Produces | `.dedi` files and a signed manifest | an index and the DeDi APIs |
 | Endpoints exposed | none; static files | `/dedi/lookup`, `/dedi/query` |
-| Signs data | required | no; relays the publisher's signature |
+| Signs data | required | relays the publisher's signature |
 | Operates infrastructure | no | yes |
-| Role in the trust model | source of truth | untrusted cache and index |
 
-A server relays the publisher's signature unaltered and does not substitute its own. A relying party
-consequently obtains an equivalent guarantee whether it queries a server or retrieves a file directly
-from the publisher's host. Servers are caches and indexes; they are not authorities, and no server
-occupies a position in the verification path defined in §7.3.
+A relying party obtains an equivalent guarantee whether it queries a server or retrieves a file directly
+from the publisher's host.
 
 ### 1.4 Scope
 
-This document specifies the publication model: the `.dedi` file format (§5), the manifest (§6),
-signing and verification (§7), and discovery (§8, §11). It is additive with respect to the existing
+This document specifies the publication model: the `.dedi` file format, the manifest,
+signing and verification, and discovery. It is additive with respect to the existing
 protocol and introduces no change to the information model, to the DeDi API, or to the behaviour of
 existing servers. A publisher that already serves the DeDi API directly remains conformant and need
 take no action.
@@ -71,12 +68,11 @@ take no action.
 ## 2. Terminology
 
 - **Publisher** — owns the data, produces `.dedi` files. Identified by a domain it controls.
-- **`.dedi` file** — a self-contained, signed JSON document: one registry (directory) and its records. §5.
+- **`.dedi` file** — a self-contained, signed JSON document: one registry (directory) and its records.
 - **Manifest** — `/.well-known/dedi.json`, a signed document declaring the publisher's current signing
-  key(s) and listing its `.dedi` files. **The authority.** §6.
-- **DeDi server** — ingests `.dedi` files, verifies them, indexes them, serves the DeDi query API. §8.
-- **Discovery list** — a public list of publisher domains, so servers know who exists. Vouches for
-  nobody; not in the trust path. §11.
+  key(s) and listing its `.dedi` files. 
+- **DeDi server** — ingests `.dedi` files, verifies them, indexes them, serves the DeDi APIs.
+- **Discovery list** — a public list of publisher domains, so servers know who exists. 
 
 The DeDi information model is unchanged: **Namespace → Registry → Record.** A `.dedi` file is a signed,
 transport-independent projection of one Registry and its Records.
@@ -90,7 +86,7 @@ transport-independent projection of one Registry and its Records.
      │  produces + signs two things:  .dedi files   and   /.well-known/dedi.json (declares its keys)
      │  hosts both anywhere it controls;  puts its domain on a public discovery list
      ▼
-   DEDI SERVER (untrusted)   ── finds publishers via the discovery list + crawl
+   DEDI SERVER    ── finds publishers via the discovery list + crawl
      │  ingests each file, verifies it, indexes, serves /dedi/lookup · /dedi/query
      ▼
    RELYING PARTY
@@ -98,21 +94,17 @@ transport-independent projection of one Registry and its Records.
      (may query a server, or fetch the .dedi file straight from the publisher — same check either way)
 ```
 
-Whether a relying party goes through a server or straight to the origin, trust rests on the **publisher's
-signature verified against the key in its own signed well-known** — never on the server.
-
 ---
 
 ## 4. The three artifacts
 
 | Artifact | Where | Job |
 |---|---|---|
-| **`.dedi` file** | anywhere the publisher controls | one signed registry + its records (§5) |
-| **Manifest** `/.well-known/dedi.json` | the publisher's domain | declares current key(s); lists files — **the authority** (§6) |
-| **Discovery list** | a public list (e.g. a GitHub repo) | names publisher domains so servers find them (§11) |
+| **`.dedi` file** | anywhere the publisher controls | one signed registry + its records |
+| **Manifest** `/.well-known/dedi.json` | the publisher's domain | declares current key(s); lists files  |
+| **Discovery list** | a public list (e.g. a GitHub repo) | names publisher domains so DeDi servers find them  |
 
-The trust model depends only on the first two, both of which are signed. The third records locations
-and asserts nothing.
+The trust model depends only on the first two, both of which are signed.
 
 ---
 
@@ -224,7 +216,7 @@ manifest tamper-evident once it has been cached or relayed away from the origin.
 
 - **Rotate** — add the new key to `keys` (and drop the old when done).
 - **Revoke** — remove the key from `keys`. Files signed by it immediately fail verification everywhere,
-  because step 3 of §7.3 (embedded key ∈ `keys`) no longer holds.
+  because embedded key ∈ `keys` no longer holds.
 
 There is no separate revocation registry for *keys*: presence in `keys` **is** validity. A publisher
 manages its entire key lifecycle by editing its own well-known.
@@ -256,7 +248,7 @@ The signing input is the whole JSON document **with the `proof` block removed**,
 
 A verifier (server or relying party) **MUST**, in order:
 
-1. **Shape-check** the file against its schema (§10).
+1. **Shape-check** the file against its schema 
 2. **Integrity (offline)** — canonicalize (JCS) the document minus `proof` and verify `proof.jws` against
    the file's **embedded** `publisher.key`. Reject on failure.
 3. **Authenticity (one cacheable fetch)** — fetch `https://{publisher.domain}/.well-known/dedi.json`,
@@ -264,7 +256,7 @@ A verifier (server or relying party) **MUST**, in order:
    is present in the manifest's `keys`.
    - Not present → the file is **integrity-valid but not authenticated**. A verifier **MUST NOT** treat it
      as an authentic statement by `publisher.domain`.
-4. **Freshness** — `now ≤ next_update` for both file and manifest; past it, re-fetch before relying (§9).
+4. **Freshness** — `now ≤ next_update` for both file and manifest; past it, re-fetch before relying.
 5. **Registry state** — `registry.state == "live"`; an `inactive` registry is not authoritative.
 
 Steps 1–2 are location-independent. Only step 3 touches the network, and its result (the current `keys`)
@@ -276,7 +268,7 @@ is cacheable within the manifest's `next_update`.
 
 Two complementary mechanisms:
 
-1. **Discovery list (§11)** — the publisher's domain appears on a public list; servers monitor the list
+1. **Discovery list** — the publisher's domain appears on a public list; servers monitor the list
    and crawl the listed domains. This mechanism does not depend on the files being linked from elsewhere.
 2. **Crawl** — a server reaching any domain fetches `/.well-known/dedi.json`, verifies it, and learns every
    `.dedi` file the publisher offers plus the key to expect. The `.dedi` extension aids opportunistic
@@ -302,15 +294,13 @@ A signed file is a **snapshot**: the signature proves *who* and *unmodified-sinc
     propagates it;
   - a **negative list** (revocations): presence = revoked — the record's existence *is* the fact.
   - To hard-revoke a member of a positive directory, use the PKI pattern DeDi already supports: remove it
-    from the positive registry **and** add it to a companion negative registry. Membership by presence,
-    polarity by registry — no per-record lifecycle field required.
+    from the positive registry **and** add it to a companion negative registry — no per-record lifecycle field required.
 
 ---
 
 ## 10. Schemas
 
-A registry's `schema` is **either a URL or an inline JSON Schema object** — never anchored to a single
-central host (no `dedi.global` URLs). Three practical forms:
+A registry's `schema` is **either a URL or an inline JSON Schema object**. Three practical forms:
 
 ```jsonc
 "schema": "https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/decentralized-directory-protocol/main/schemas/public_key.json"  // a protocol-declared schema
@@ -346,11 +336,11 @@ dedi-discovery/            (a public GitHub repo, or any public list)
 ```
 
 The list makes no assertion about any entry. Any party may add any domain, and doing so confers no
-authority, because trust derives from each domain's own signed well-known (§6). Adding `example.org` to
+authority, because trust derives from each domain's own signed well-known. Adding `example.org` to
 the list does not enable a third party to speak for example.org: a server that crawls the entry fetches
 example.org's own manifest and obtains its genuine key. The list therefore requires no proof of control,
 no registration record, and no pinning. It is a discovery mechanism, not a trust anchor, and lies
-outside the verification path entirely (§7.3).
+outside the verification path entirely.
 
 A GitHub repo is a convenient implementation (the directory listing is the index, commits are the log,
 `git clone` mirrors it), but any public list conforms.
@@ -365,12 +355,12 @@ A GitHub repo is a convenient implementation (the directory listing is the index
   `did:web` and the general TLS/web-PKI model carry; mitigate with external **monitors** that watch a
   publisher's manifest for unexpected key changes. In exchange, the trust model needs no central registry.
 - **Stolen key.** A thief can sign files until the publisher **removes the key from its well-known**
-  (§6.2); revocation is then immediate and global, and — unlike deleting a hosted file — reaches cached
+  ; revocation is then immediate and global, and — unlike deleting a hosted file — reaches cached
   and relayed copies at their next authenticity check.
 - **Rollback / replay on negative lists.** An old but validly-signed revocation file could hide a newer
   revocation; countered by `next_update` (stale copies rejected) and monitors that watch for a regressing
   `updated_at`.
-- **Canonicalization ambiguity.** Signing raw JSON bytes is unsafe across tools; JCS (§7.1) is mandatory.
+- **Canonicalization ambiguity.** Signing raw JSON bytes is unsafe across tools; JCS is mandatory.
 - **No private keys in transit or at rest server-side.** Publishers sign locally. No DeDi server, and no
   entry in the discovery list, ever receives, stores, or logs private key material. Hard invariant.
 
@@ -378,14 +368,14 @@ A GitHub repo is a convenient implementation (the directory listing is the index
 
 ## 13. Conformance
 
-A **publisher** conforms if it: produces `.dedi` files per §5, **signed** per §7, each carrying
-`source_url` and `next_update`; serves a signed `/.well-known/dedi.json` (§6) declaring its current
-key(s); is discoverable via the list and/or crawl (§8); and expresses removals via freshness or a negative
-registry (§9).
+A **publisher** conforms if it: produces `.dedi` files, each carrying
+`source_url` and `next_update`; serves a signed `/.well-known/dedi.json` declaring its current
+key(s); is discoverable via the list and/or crawl; and expresses removals via freshness or a negative
+registry.
 
 A **DeDi server** conforms if it: verifies every ingested file end-to-end including the well-known key
-check (§7.3) and rejects unauthenticated data; serves the publisher's original records and signatures
-unaltered (§8); and honors freshness and registry state (§9).
+check and rejects unauthenticated data; serves the publisher's original records and signatures
+unaltered ; and honors freshness and registry state.
 
 A **discovery list** conforms if it is public and lists publisher domains. It asserts nothing else.
 
@@ -395,11 +385,11 @@ A **discovery list** conforms if it is public and lists publisher domains. It as
 
 - **Sharding format** — Merkle commitment over shard files; range convention; partial verification.
 - **Multi-key / delegation** — multiple concurrent `keys`; delegating signing to an operational key.
-- **Schema pinning** — cutting a `v0.1` tag and switching canonical schema URLs off `main` (§10).
+- **Schema pinning** — cutting a `v0.1` tag and switching canonical schema URLs off `main`.
 - **Manifest freshness for high-churn registries** — short `next_update` windows vs. crawl cost;
   conditional GET (ETag / If-None-Match) to make re-fetch cheap.
 - **Monitor / transparency layer** — an optional witness that logs manifest key-changes, to close the
-  host-compromise gap in §12.
+  host-compromise gap.
 
 ---
 
