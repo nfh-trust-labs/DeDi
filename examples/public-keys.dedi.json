@@ -1,7 +1,7 @@
 {
   "dedi_version": "0.1",
   "type": "dedi-file",
-  "source_url": "https://example.org/dedi/public-keys.dedi",
+  "source_url": "https://example.org/dedi/public-keys.dedi.json",
   "next_update": "2026-07-15T10:00:00Z",
   "publisher": {
     "domain": "example.org",

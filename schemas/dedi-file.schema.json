@@ -2,13 +2,13 @@
   "$id": "https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/decentralized-directory-protocol/main/schemas/dedi-file.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "DeDi File",
-  "description": "A self-contained, signed JSON document holding one registry (directory) and its records. Hosted by the publisher at any URL it controls; discovered, verified and served by DeDi servers. Authenticity is established by confirming publisher.key appears in the keys of the publisher's signed /.well-known/dedi.json. See docs/publishing-dedi-files.md. NOTE: the schema $id points at the mutable main branch and must be pinned to a release tag before release.",
+  "description": "A self-contained, signed JSON document holding one registry (directory) and its records. Served as application/json; the *.dedi.json filename and /dedi/ directory are RECOMMENDED conventions, not conformance requirements (see spec 5.2). Hosted by the publisher at any URL it controls; discovered, verified and served by DeDi servers. Authenticity is established by confirming publisher.key appears in the keys of the publisher's signed /.well-known/dedi.json. See docs/publishing-dedi-files.md. NOTE: the schema $id points at the mutable main branch and must be pinned to a release tag before release.",
   "type": "object",
-  "required": ["dedi_version", "source_url", "next_update", "publisher", "namespace", "registry", "records", "proof"],
+  "required": ["dedi_version", "type", "source_url", "next_update", "publisher", "namespace", "registry", "records", "proof"],
   "additionalProperties": false,
   "properties": {
-    "dedi_version": { "type": "string", "description": "Version of the .dedi file format, e.g. '0.1'." },
-    "type": { "type": "string", "const": "dedi-file", "description": "Optional discriminator." },
+    "dedi_version": { "type": "string", "description": "Version of the DeDi file format, e.g. '0.1'." },
+    "type": { "type": "string", "const": "dedi-file", "description": "Discriminator identifying this document as a DeDi file. Required: the *.dedi.json filename and /dedi/ path are conventions only (spec 5.2), so a conformant file may arrive with neither. This is the one self-identification that always travels with the content." },
     "source_url": { "type": "string", "format": "uri", "description": "Canonical location; used to re-fetch a fresher copy after the file has been relocated to a mirror." },
     "next_update": { "type": "string", "format": "date-time", "description": "After this time the file MUST be treated as stale and re-fetched from source_url before being relied upon." },
     "publisher": {

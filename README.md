@@ -63,12 +63,22 @@ DeDi’s information architecture is organized around three key constructs:
 
 ## Adopting DeDi
 
-A publisher adopts DeDi by publishing signed `.dedi` files. There is no further requirement. The publisher produces one self-contained, signed `.dedi` file per directory and serves a signed `/.well-known/dedi.json` manifest declaring its signing key. No infrastructure need be operated: any organization with a domain and a signing key can comply. See **[docs/publishing-dedi-files.md](docs/publishing-dedi-files.md)**.
+A publisher adopts DeDi by publishing signed DeDi files. There is no further requirement. The publisher produces one self-contained, signed DeDi file per directory and serves a signed `/.well-known/dedi.json` manifest declaring its signing key. No infrastructure need be operated: any organization with a domain and a signing key can comply. See **[docs/publishing-dedi-files.md](docs/publishing-dedi-files.md)**.
 
 The publisher chooses where those files are hosted. The file and its signature are identical in either case:
 
 - **An endpoint the publisher controls**, such as its own website, a source repository, or a public file-sharing service. This is the baseline.
 - **A DeDi server**, with which the files may instead be deposited and hosted on the publisher's behalf, such as dedi.global.
+
+A published directory looks like this:
+
+```
+https://example.org/.well-known/dedi.json          ← the manifest: declares the signing key, lists the files
+https://example.org/dedi/public-keys.dedi.json     ← a DeDi file: one signed directory and its records
+https://example.org/dedi/revocations.dedi.json
+```
+
+Only the manifest's path is fixed, per RFC 8615. The `*.dedi.json` filename and the `/dedi/` directory are recommended conventions: the manifest lists each file's absolute URL, so files may be hosted anywhere, including on a different host from the manifest.
 
 The choice of host does not affect verification: a verifier evaluates the publisher's signature against the key declared at the publisher's well-known, irrespective of which party serves the file. Hosting is a deployment concern and carries no weight in the trust model.
 
@@ -76,7 +86,7 @@ Adopting DeDi therefore does not require operating a DeDi server. It requires pu
 
 ## DeDi Servers
 
-A DeDi server is a distinct role, not a mode of publisher compliance. It is optional infrastructure operated by any party that wishes to serve published files at scale. A server discovers and verifies published `.dedi` files, indexes them, and exposes the DeDi API — `/dedi/lookup` and `/dedi/query` — across many publishers. It may additionally offer capabilities that static files do not provide, such as cross-directory search, version history, conditional fetch, and availability guarantees.
+A DeDi server is a distinct role, not a mode of publisher compliance. It is optional infrastructure operated by any party that wishes to serve published files at scale. A server discovers and verifies published DeDi files, indexes them, and exposes the DeDi API — `/dedi/lookup` and `/dedi/query` — across many publishers. It may additionally offer capabilities that static files do not provide, such as cross-directory search, version history, conditional fetch, and availability guarantees.
 
 A server relays the publisher's original signature unaltered and does not substitute its own. A relying party therefore obtains an equivalent cryptographic guarantee whether it queries a server or retrieves the file directly from the publisher. Servers are caches and indexes; they are not authorities.
 
@@ -104,10 +114,10 @@ DeDi supports the co-existence of multiple data standards and schemas (e.g., VC 
 
 Your participation is crucial to the success of this initiative. Here's how you can help us build a more secure digital future:
 
-- **Publish your first directory.** No infrastructure is required: sign a `.dedi` file, host it on an endpoint you already control, and serve a `/.well-known/dedi.json`. Begin with **[docs/publishing-dedi-files.md](docs/publishing-dedi-files.md)** and the **[examples/](examples/)**.
+- **Publish your first directory.** No infrastructure is required: sign a DeDi file, host it on an endpoint you already control, and serve a `/.well-known/dedi.json`. Begin with **[docs/publishing-dedi-files.md](docs/publishing-dedi-files.md)** and the **[examples/](examples/)**.
 - **If you would rather not host the files yourself**, claim your namespace on dedi.global and publish your directory there.
 - **Adopt the DeDi Protocol** to look up and query public records in your verification flows, against any publisher's files or any DeDi server.
-- **If you already operate a public registry**, implement the DeDi APIs on it to make it accessible, or publish `.dedi` files alongside it.
+- **If you already operate a public registry**, implement the DeDi APIs on it to make it accessible, or publish DeDi files alongside it.
 
 Let’s co-create a future where trust is seamlessly integrated into every digital transaction.
 
