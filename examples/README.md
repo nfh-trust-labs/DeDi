@@ -29,4 +29,4 @@ discovery consults them — the manifest's `files[].url` is what locates a file.
 > detached JWS over the JCS-canonicalized document, signed with the publisher's private key.
 
 > **Temporary schema URLs.** The `schema` / `$id` URLs point at the repo's `main` branch, which is
-> mutable. Before release they must be pinned to a version tag or commit SHA (see §10 of the spec).
+> mutable. Before release they must be pinned to a version tag or commit SHA (see the Schemas section of the spec).

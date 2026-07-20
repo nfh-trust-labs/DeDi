@@ -41,7 +41,7 @@
         "additionalProperties": false,
         "properties": {
           "registry": { "type": "string", "description": "Registry name." },
-          "url": { "type": "string", "format": "uri", "description": "Absolute URL where the DeDi file is hosted; may be any host the publisher controls, including one different from the manifest's own domain. Authoritative for location: filename and directory conventions (spec 5.2) are never consulted." },
+          "url": { "type": "string", "format": "uri", "description": "Absolute URL where the DeDi file is hosted; may be any host the publisher controls, including one different from the manifest's own domain. Authoritative for location: filename and directory conventions are never consulted." },
           "digest": { "type": "string", "description": "Digest of the referenced DeDi file, so this signed manifest commits to its content and changes are detectable. Prefixed algorithm, e.g. 'sha-256:...'." },
           "schema": {
             "description": "Optional: the registry's schema (URL or inline), echoed for discovery/filtering without fetching the file.",
