@@ -235,7 +235,7 @@ files. It is signed, and served under the domain's TLS at the well-known path (R
     { "registry": "public-keys", "url": "https://example.org/dedi/public-keys.dedi.json",
       "digest": "sha-256:9f2c1d4e7a8b0c3d5e6f70819293a4b5c6d7e8f90a1b2c3d4e5f60718293aebae",
       "schema": "https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/decentralized-directory-protocol/main/schemas/public_key.json" },
-    { "registry": "revocations", "url": "https://cdn.example.net/revocations.dedi.json",   // files can live anywhere
+    { "registry": "revocations", "url": "https://example.org/dedi/revocations.dedi.json",
       "digest": "sha-256:5b1a2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f0",
       "schema": "https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/decentralized-directory-protocol/main/schemas/revoke.json" }
   ],
@@ -372,15 +372,23 @@ agree.
 
 ## 11. The discovery list
 
-The "registry" is a public list of publisher **domains** — nothing more.
+The "registry" is a public list of publisher **domains** — nothing more. One domain per line; lines
+beginning with `#` are comments.
 
 ```
 dedi-discovery/            (a public GitHub repo, or any public list)
 └── domains.txt
+       # head: 2026-07-10T00:00:00Z
        example.org
        univ.edu
        gleif.org
 ```
+
+**Optional head.** The list MAY carry a head: a first comment line `# head: <value>`, updated
+whenever the entries change. Its only purpose is to tell pollers that a new version exists — a
+poller re-reads the list when the value differs from the one it last saw. It is unsigned and
+carries no authority. A git-hosted list already provides this through its commit id and commit
+timestamp, and MAY omit the head.
 
 The list makes no assertion about any entry. Any party may add any domain, and doing so confers no
 authority, because trust derives from each domain's own signed well-known. Adding `example.org` to
