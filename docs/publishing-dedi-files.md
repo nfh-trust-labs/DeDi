@@ -26,7 +26,7 @@ This document does not alter the DeDi information model, which remains Namespace
 
 **A publisher adopts DeDi by publishing signed DeDi files.** No further requirement applies. The
 publisher produces one self-contained, signed DeDi file per registry and serves a signed
-`/.well-known/dedi.json` manifest declaring its signing key or keys. Operation of a service is
+`/.well-known/dedi.index.json` manifest declaring its signing key or keys. Operation of a service is
 not required at any point.
 
 A publisher MAY host its files at any location under its control, including its own web server, a
@@ -69,10 +69,10 @@ take no action.
 
 - **Publisher** — owns the data, produces DeDi files. Identified by a domain it controls.
 - **DeDi file** — a self-contained, signed JSON document: one registry (directory) and its records.
-- **Manifest** — `/.well-known/dedi.json`, a signed document declaring the publisher's current signing
+- **Manifest** — `/.well-known/dedi.index.json`, a signed document declaring the publisher's current signing
   key(s) and listing its DeDi files.
 - **DeDi server** — ingests DeDi files, verifies them, indexes them, serves the DeDi APIs.
-- **Discovery list** — a public list of publisher domains, so servers know who exists.
+- **Discovery list** — a public list of publisher domains (and references to further lists), so servers know who exists.
 
 The DeDi information model is unchanged: **Namespace → Registry → Record.** A DeDi file is a signed,
 transport-independent projection of one Registry and its Records.
@@ -83,7 +83,7 @@ transport-independent projection of one Registry and its Records.
 
 ```
    PUBLISHER (example.org)
-     │  produces + signs two things:  DeDi files   and   /.well-known/dedi.json (declares its keys)
+     │  produces + signs two things:  DeDi files   and   /.well-known/dedi.index.json (declares its keys)
      │  hosts both anywhere it controls;  puts its domain on a public discovery list
      ▼
    DEDI SERVER    ── finds publishers via the discovery list + crawl
@@ -101,7 +101,7 @@ transport-independent projection of one Registry and its Records.
 | Artifact | Where | Job |
 |---|---|---|
 | **DeDi file** | anywhere the publisher controls | one signed registry + its records |
-| **Manifest** `/.well-known/dedi.json` | the publisher's domain | declares current key(s); lists files |
+| **Manifest** `/.well-known/dedi.index.json` | the publisher's domain | declares current key(s); lists files |
 | **Discovery list** | a public list (e.g. a GitHub repo) | names publisher domains so DeDi servers find them |
 
 The trust model depends only on the first two, both of which are signed.
@@ -118,7 +118,7 @@ file into a `/dedi/lookup` response without translation.
 {
   "dedi_version": "0.1",
   "type": "dedi-file",                        // required — the only self-identification that survives relocation
-  "source_url": "https://example.org/dedi/public-keys.dedi.json",  // where to re-fetch a fresher copy after relocation
+  "source_url": "https://example.org/dedi/dedi.public-keys.json",  // where to re-fetch a fresher copy after relocation
   "next_update": "2026-07-15T10:00:00Z",      // stale after this → re-fetch source_url
 
   "publisher": {
@@ -178,20 +178,22 @@ them. The following are therefore **conventions, not conformance requirements** 
 host offers no control over paths or filenames, such as a public file-sharing service that serves
 opaque URLs, remains fully conformant without them.
 
-**Filename — `*.dedi.json` RECOMMENDED.** The `.json` suffix is what makes the file serve correctly:
-web servers map file extensions to `Content-Type`, and an unregistered extension is served as
-`application/octet-stream`, which browsers download rather than parse and strict clients reject. The
-`.dedi` infix marks the file as a DeDi file and makes a set of them matchable by glob
-(`*.dedi.json`) in a repository, a mirror, or a server's ingest filter. It is not a discovery
-mechanism: the web cannot enumerate files by extension.
+**Filename — `dedi.<registry-name>.json` RECOMMENDED.** The `.json` suffix is what makes the file
+serve correctly: web servers map file extensions to `Content-Type`, and an unregistered extension is
+served as `application/octet-stream`, which browsers download rather than parse and strict clients
+reject. The `dedi.` prefix marks the file as a DeDi file and makes the set matchable by one glob
+(`dedi.*.json`) in a repository, a mirror, or a server's ingest filter; the registry name in the
+filename lets a crawler fetch only the registries it needs. The manifest carries the same prefix —
+`dedi.index.json`, matching its well-known path. None of this is a discovery mechanism: the web
+cannot enumerate files by name.
 
 **Path — a `/dedi/` directory RECOMMENDED.** Grouping a publisher's files under one directory keeps
 them administrable and gives a single place to scope the HTTP headers below:
 
 ```
-https://example.org/.well-known/dedi.json            ← manifest — fixed path, normative (RFC 8615)
-https://example.org/dedi/public-keys.dedi.json       ← files — RECOMMENDED convention
-https://example.org/dedi/revocations.dedi.json
+https://example.org/.well-known/dedi.index.json            ← manifest — fixed path, normative (RFC 8615)
+https://example.org/dedi/dedi.public-keys.json       ← files — RECOMMENDED convention
+https://example.org/dedi/dedi.revocations.json
 ```
 
 Only the manifest's location is normative; RFC 8615 exists precisely to make a small discovery
@@ -212,7 +214,7 @@ including on a different host from the manifest itself.
 
 ---
 
-## 6. The manifest — `/.well-known/dedi.json`
+## 6. The manifest — `/.well-known/dedi.index.json`
 
 The manifest is **the authority**: it declares the publisher's current signing key(s) and lists its
 files. It is signed, and served under the domain's TLS at the well-known path (RFC 8615).
@@ -232,10 +234,10 @@ files. It is signed, and served under the domain's TLS at the well-known path (R
   "next_update": "2026-07-15T10:00:00Z",      // how long a verifier may cache these keys (revocation bound)
 
   "files": [                                  // the registries offered — discovery + change-detection
-    { "registry": "public-keys", "url": "https://example.org/dedi/public-keys.dedi.json",
+    { "registry": "public-keys", "url": "https://example.org/dedi/dedi.public-keys.json",
       "digest": "sha-256:9f2c1d4e7a8b0c3d5e6f70819293a4b5c6d7e8f90a1b2c3d4e5f60718293aebae",
       "schema": "https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/decentralized-directory-protocol/main/schemas/public_key.json" },
-    { "registry": "revocations", "url": "https://example.org/dedi/revocations.dedi.json",
+    { "registry": "revocations", "url": "https://example.org/dedi/dedi.revocations.json",
       "digest": "sha-256:5b1a2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f0",
       "schema": "https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/decentralized-directory-protocol/main/schemas/revoke.json" }
   ],
@@ -293,7 +295,7 @@ A verifier (server or relying party) **MUST**, in order:
 1. **Shape-check** the file against its schema.
 2. **Integrity (offline)** — canonicalize (JCS) the document minus `proof` and verify `proof.jws` against
    the file's **embedded** `publisher.key`. Reject on failure.
-3. **Authenticity (one cacheable fetch)** — fetch `https://{publisher.domain}/.well-known/dedi.json`,
+3. **Authenticity (one cacheable fetch)** — fetch `https://{publisher.domain}/.well-known/dedi.index.json`,
    verify *its* signature (step 2, against a key it itself lists), and confirm the file's `publisher.key`
    is present in the manifest's `keys`.
    - Not present → the file is **integrity-valid but not authenticated**. A verifier **MUST NOT** treat it
@@ -312,7 +314,7 @@ Two complementary mechanisms:
 
 1. **Discovery list** — the publisher's domain appears on a public list; servers monitor the list
    and crawl the listed domains. This mechanism does not depend on the files being linked from elsewhere.
-2. **Crawl** — a server reaching any domain fetches `/.well-known/dedi.json`, verifies it, and learns
+2. **Crawl** — a server reaching any domain fetches `/.well-known/dedi.index.json`, verifies it, and learns
    every DeDi file the publisher offers plus the key to expect.
 
 The manifest is the anchor of both mechanisms, and its well-known path is what makes an unknown domain
@@ -372,8 +374,8 @@ agree.
 
 ## 11. The discovery list
 
-The "registry" is a public list of publisher **domains** — nothing more. One domain per line; lines
-beginning with `#` are comments.
+The "registry" is a public list — nothing more. One entry per line; lines beginning with `#` are
+comments. An entry is either a **publisher domain** or the **URL of another list**:
 
 ```
 dedi-discovery/            (a public GitHub repo, or any public list)
@@ -382,7 +384,18 @@ dedi-discovery/            (a public GitHub repo, or any public list)
        example.org
        univ.edu
        gleif.org
+       https://lists.example.net/domains.txt
 ```
+
+**List references.** An entry that is a URL points to another `domains.txt`, which a poller reads the
+same way. This lets the list be partitioned and scaled — by region, by sector, by operator — instead
+of growing without bound in one file. A poller MUST bound recursion and ignore entries it has already
+seen, so referenced lists cannot form a loop. A referenced list carries no more authority than the
+list that names it: none.
+
+**Root list.** The root `domains.txt` is maintained in the DeDi protocol repository (LF Decentralized
+Trust), at the repository root. It is the conventional starting point for a crawl; any party may
+still maintain and poll its own list.
 
 **Optional head.** The list MAY carry a head: a first comment line `# head: <value>`, updated
 whenever the entries change. Its only purpose is to tell pollers that a new version exists — a
@@ -424,7 +437,7 @@ A GitHub repo is a convenient implementation (the directory listing is the index
 ## 13. Conformance
 
 A **publisher** conforms if it: produces DeDi files, each carrying
-`source_url` and `next_update`; serves a signed `/.well-known/dedi.json` declaring its current
+`source_url` and `next_update`; serves a signed `/.well-known/dedi.index.json` declaring its current
 key(s); is discoverable via the list and/or crawl; and expresses removals via freshness or a negative
 registry. The manifest's location is the only fixed path a publisher must honour. The filename,
 directory, and header conventions are RECOMMENDED and are not conditions of conformance.
@@ -462,11 +475,11 @@ sequenceDiagram
     participant S as DeDi server
     Note over P: generate keypair — private key stays local
     P->>P: build one DeDi file per registry, sign each (JCS + JWS)
-    P->>P: build /.well-known/dedi.json (declares keys, lists files), sign it
+    P->>P: build /.well-known/dedi.index.json (declares keys, lists files), sign it
     P->>P: host files + manifest
     P->>L: add domain (once)
     S->>L: read domains
-    S->>P: GET /.well-known/dedi.json and verify
+    S->>P: GET /.well-known/dedi.index.json and verify
     S->>P: GET each DeDi file
     S->>S: verify end-to-end, then index
 ```
@@ -492,7 +505,7 @@ sequenceDiagram
 sequenceDiagram
     actor P as Publisher
     participant S as DeDi server
-    P->>P: edit /.well-known/dedi.json keys[] (add new / remove compromised)
+    P->>P: edit /.well-known/dedi.index.json keys[] (add new / remove compromised)
     P->>P: re-sign files with a current key
     Note over P: all self-service, on the publisher's own domain
     S->>P: re-fetch manifest — keys changed
@@ -544,7 +557,7 @@ sequenceDiagram
         RP->>P: GET the DeDi file
         P-->>RP: file
     end
-    RP->>P: fetch /.well-known/dedi.json (cacheable)
+    RP->>P: fetch /.well-known/dedi.index.json (cacheable)
     RP->>RP: verify signature, key in keys, freshness, state
     RP->>RP: accept or reject
 ```

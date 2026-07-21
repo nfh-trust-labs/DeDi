@@ -1,8 +1,8 @@
 {
   "$id": "https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/decentralized-directory-protocol/main/schemas/dedi-manifest.json",
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "DeDi Manifest (/.well-known/dedi.json)",
-  "description": "A signed document served at a publisher's /.well-known/dedi.json. It declares the publisher's current signing key(s) and lists its DeDi files. This is THE AUTHORITY: a DeDi file is authentic only if its publisher.key appears in this manifest's keys. Trust is rooted in the manifest being served under the domain's TLS at the well-known path (did:web-style). See docs/publishing-dedi-files.md. NOTE: the schema $id points at the mutable main branch and must be pinned to a release tag before release.",
+  "title": "DeDi Manifest (/.well-known/dedi.index.json)",
+  "description": "A signed document served at a publisher's /.well-known/dedi.index.json. It declares the publisher's current signing key(s) and lists its DeDi files. This is THE AUTHORITY: a DeDi file is authentic only if its publisher.key appears in this manifest's keys. Trust is rooted in the manifest being served under the domain's TLS at the well-known path (did:web-style). See docs/publishing-dedi-files.md. NOTE: the schema $id points at the mutable main branch and must be pinned to a release tag before release.",
   "type": "object",
   "required": ["dedi_version", "domain", "keys", "updated_at", "next_update", "files", "proof"],
   "additionalProperties": false,

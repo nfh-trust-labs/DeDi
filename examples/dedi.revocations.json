@@ -1,7 +1,7 @@
 {
   "dedi_version": "0.1",
   "type": "dedi-file",
-  "source_url": "https://example.org/dedi/revocations.dedi.json",
+  "source_url": "https://example.org/dedi/dedi.revocations.json",
   "next_update": "2026-07-09T10:00:00Z",
   "publisher": {
     "domain": "example.org",

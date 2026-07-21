@@ -63,7 +63,7 @@ DeDi’s information architecture is organized around three key constructs:
 
 ## Adopting DeDi
 
-A publisher adopts DeDi by publishing signed DeDi files. There is no further requirement. The publisher produces one self-contained, signed DeDi file per directory and serves a signed `/.well-known/dedi.json` manifest declaring its signing key. No infrastructure need be operated: any organization with a domain and a signing key can comply. See **[docs/publishing-dedi-files.md](docs/publishing-dedi-files.md)**.
+A publisher adopts DeDi by publishing signed DeDi files. There is no further requirement. The publisher produces one self-contained, signed DeDi file per directory and serves a signed `/.well-known/dedi.index.json` manifest declaring its signing key. No infrastructure need be operated: any organization with a domain and a signing key can comply. See **[docs/publishing-dedi-files.md](docs/publishing-dedi-files.md)**.
 
 The publisher chooses where those files are hosted. The file and its signature are identical in either case:
 
@@ -73,12 +73,12 @@ The publisher chooses where those files are hosted. The file and its signature a
 A published directory looks like this:
 
 ```
-https://example.org/.well-known/dedi.json          ← the manifest: declares the signing key, lists the files
-https://example.org/dedi/public-keys.dedi.json     ← a DeDi file: one signed directory and its records
-https://example.org/dedi/revocations.dedi.json
+https://example.org/.well-known/dedi.index.json          ← the manifest: declares the signing key, lists the files
+https://example.org/dedi/dedi.public-keys.json     ← a DeDi file: one signed directory and its records
+https://example.org/dedi/dedi.revocations.json
 ```
 
-Only the manifest's path is fixed, per RFC 8615. The `*.dedi.json` filename and the `/dedi/` directory are recommended conventions: the manifest lists each file's absolute URL, so files may be hosted anywhere, including on a different host from the manifest.
+Only the manifest's path is fixed, per RFC 8615. The `dedi.<name>.json` filename and the `/dedi/` directory are recommended conventions: the manifest lists each file's absolute URL, so files may be hosted anywhere, including on a different host from the manifest.
 
 The choice of host does not affect verification: a verifier evaluates the publisher's signature against the key declared at the publisher's well-known, irrespective of which party serves the file. Hosting is a deployment concern and carries no weight in the trust model.
 
@@ -114,7 +114,7 @@ DeDi supports the co-existence of multiple data standards and schemas (e.g., VC 
 
 Your participation is crucial to the success of this initiative. Here's how you can help us build a more secure digital future:
 
-- **Publish your first directory.** No infrastructure is required: sign a DeDi file, host it on an endpoint you already control, and serve a `/.well-known/dedi.json`. Begin with **[docs/publishing-dedi-files.md](docs/publishing-dedi-files.md)** and the **[examples/](examples/)**.
+- **Publish your first directory.** No infrastructure is required: sign a DeDi file, host it on an endpoint you already control, and serve a `/.well-known/dedi.index.json`. Begin with **[docs/publishing-dedi-files.md](docs/publishing-dedi-files.md)** and the **[examples/](examples/)**.
 - **If you would rather not host the files yourself**, claim your namespace on dedi.global and publish your directory there.
 - **Adopt the DeDi Protocol** to look up and query public records in your verification flows, against any publisher's files or any DeDi server.
 - **If you already operate a public registry**, implement the DeDi APIs on it to make it accessible, or publish DeDi files alongside it.
