@@ -5,7 +5,7 @@ Same publisher (`example.org`) and key (`key-1`) throughout.
 
 | File | What it is |
 |---|---|
-| [`dedi.index.json`](dedi.index.json) | The publisher's `/.well-known/dedi.index.json` manifest — declares the current key and lists two registries. **The authority.** |
+| [`dedi.index.json`](dedi.index.json) | The publisher's `/.well-known/dedi.index.json` manifest — declares the current key, lists two referenced registries, and embeds a third (`trust-anchors`) inline. **The authority.** |
 | [`dedi.public-keys.json`](dedi.public-keys.json) | A positive directory: presence of a record = a valid key. |
 | [`dedi.revocations.json`](dedi.revocations.json) | A negative list: presence of a record = revoked. Same shape; polarity comes from the registry, not a per-record field. |
 | [`domains.txt`](domains.txt) | The discovery list — publisher domains, one per line, with an optional `# head:` last-changed marker. Vouches for nobody. |
@@ -23,6 +23,11 @@ https://example.org/dedi/dedi.revocations.json
 
 The `dedi.*.json` name and the `/dedi/` directory are conventions; nothing in verification or
 discovery consults them — the manifest's `files[].url` is what locates a file.
+
+The third registry, `trust-anchors`, has no hosted file: it is a complete DeDi file embedded
+**inline** in the manifest's `files[]` (see the spec's Inline registries section). Its `source_url`
+is the manifest's own well-known URL, and it carries no `digest` — the manifest's signature covers
+its bytes directly.
 
 > **Not cryptographically valid.** The `jws` and `digest` values are placeholders (marked
 > `ILLUSTRATIVE_...` where applicable) to show *shape*, not real signatures. A real file carries a

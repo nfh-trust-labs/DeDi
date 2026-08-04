@@ -112,7 +112,8 @@ The trust model depends only on the first two, both of which are signed.
 
 A DeDi file carries **exactly one registry** (directory). A namespace with *N* registries publishes
 *N* files, indexed together by the manifest. Fields reuse the DeDi API's names so a server projects a
-file into a `/dedi/lookup` response without translation.
+file into a `/dedi/lookup` response without translation. A DeDi file is served as its own document,
+or — for a small registry — embedded verbatim in the manifest's `files[]` (see 6.4).
 
 ```jsonc
 {
@@ -166,6 +167,12 @@ file into a `/dedi/lookup` response without translation.
 - **`publisher.key` is public only.** Publishers sign locally; no server ever receives private key material.
 - **`records` are pure data** — `{ record_name, details }`. Lifecycle lives at the *registry* level
   (`state`) and via *negative registries*, not per record.
+- **`record_name` is REQUIRED and MUST be unique within its registry.** A file containing duplicate
+  record names is invalid and MUST be rejected. Names are case-sensitive and carry no character-set
+  restriction; a name appearing in a URL path is percent-encoded.
+- **Addressing.** Every record is addressed by the triple `{namespace}/{registry_name}/{record_name}`.
+  A DeDi server MUST expose an ingested record at exactly that triple, regardless of which file, host,
+  or manifest it was crawled from.
 - **`schema`** is a URL or an inline JSON Schema object, never anchored to a central host.
 - One file = one registry. Splitting a very large registry across multiple files (sharding) is a
   deferred extension, not part of this version.
@@ -248,6 +255,9 @@ files. It is signed, and served under the domain's TLS at the well-known path (R
 }
 ```
 
+Registry names are unique within a namespace: a manifest MUST NOT list two `files[]` entries —
+referenced or inline (6.4) — with the same registry name.
+
 ### 6.1 Self-signing and the trust anchor
 
 The manifest declares `key-1` and is signed by `key-1`. The apparent circularity is resolved by the
@@ -269,7 +279,40 @@ manages its entire key lifecycle by editing its own well-known.
 
 The whole-file digest lets the *signed* manifest vouch for each DeDi file before it is fetched, and
 lets a server detect a change (digest moved → re-fetch). It is the only place a whole-file hash is needed;
-the file's own signature secures its internal integrity.
+the file's own signature secures its internal integrity. An inline entry (6.4) carries no digest:
+the manifest's own signature covers its bytes directly.
+
+### 6.4 Inline registries
+
+An entry in `files[]` MAY, instead of referencing a file by URL, embed a **complete DeDi file object
+verbatim** — same shape, its own `proof`, its own embedded `publisher.key`. Everything about the file
+is unchanged: a server that extracts the entry holds a standard DeDi file and verifies it by the same
+five steps, and the key-membership check (step 3) is satisfied locally, since the surrounding
+manifest's `keys` are already in hand. The embedded file's `source_url` is the manifest's own
+well-known URL — that is genuinely where a fresher copy is re-fetched. An inline entry carries no
+`digest`, because the manifest's signature covers its bytes directly. An entry is a reference or an
+inline file, never both.
+
+```jsonc
+"files": [
+  { "registry": "public-keys",                    // referenced — hosted at url, committed by digest
+    "url": "https://example.org/dedi/dedi.public-keys.json",
+    "digest": "sha-256:..." },
+  { "dedi_version": "0.1", "type": "dedi-file",   // inline — a complete DeDi file, embedded verbatim
+    "source_url": "https://example.org/.well-known/dedi.index.json",
+    "next_update": "2026-07-15T10:00:00Z",
+    "publisher": { "domain": "example.org", "key": { "kid": "key-1", "...": "..." } },
+    "namespace": "example.org",
+    "registry": { "name": "trust-anchors", "...": "..." },
+    "records": [ { "record_name": "lfdt-root", "details": { "...": "..." } } ],
+    "proof": { "verification_method": "key-1", "canonicalization": "JCS", "jws": "..." } }
+]
+```
+
+Inline is intended for **small registries** — a publisher with a three-record key directory becomes
+fully conformant with a single signed document at one fixed path. As a registry grows, the publisher
+SHOULD move it out to a referenced file: the well-known is fetched by every verifier for the key
+check, and its size is a cost paid by all of them.
 
 ---
 
@@ -437,14 +480,16 @@ A GitHub repo is a convenient implementation (the directory listing is the index
 ## 13. Conformance
 
 A **publisher** conforms if it: produces DeDi files, each carrying
-`source_url` and `next_update`; serves a signed `/.well-known/dedi.index.json` declaring its current
+`source_url` and `next_update`, served at URLs it controls or embedded inline in its manifest; serves
+a signed `/.well-known/dedi.index.json` declaring its current
 key(s); is discoverable via the list and/or crawl; and expresses removals via freshness or a negative
 registry. The manifest's location is the only fixed path a publisher must honour. The filename,
 directory, and header conventions are RECOMMENDED and are not conditions of conformance.
 
 A **DeDi server** conforms if it: verifies every ingested file end-to-end including the well-known key
 check and rejects unauthenticated data; serves the publisher's original records and signatures
-unaltered; and honors freshness and registry state.
+unaltered; exposes every ingested record at its `{namespace}/{registry_name}/{record_name}` triple;
+and honors freshness and registry state.
 
 A **discovery list** conforms if it is public and lists publisher domains. It asserts nothing else.
 

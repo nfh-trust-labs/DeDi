@@ -34,21 +34,30 @@
     "next_update": { "type": "string", "format": "date-time", "description": "How long a verifier may cache these keys before re-fetching; also the revocation-propagation bound." },
     "files": {
       "type": "array",
-      "description": "The DeDi files (registries) this publisher offers.",
+      "description": "The DeDi files (registries) this publisher offers. An entry is a reference (the file is hosted at url, committed to by digest) or an inline entry (a complete DeDi file object embedded verbatim), never both. Registry names MUST be unique across entries.",
       "items": {
-        "type": "object",
-        "required": ["registry", "url", "digest"],
-        "additionalProperties": false,
-        "properties": {
-          "registry": { "type": "string", "description": "Registry name." },
-          "url": { "type": "string", "format": "uri", "description": "Absolute URL where the DeDi file is hosted; may be any host the publisher controls, including one different from the manifest's own domain. Authoritative for location: filename and directory conventions are never consulted." },
-          "digest": { "type": "string", "description": "Digest of the referenced DeDi file, so this signed manifest commits to its content and changes are detectable. Prefixed algorithm, e.g. 'sha-256:...'." },
-          "schema": {
-            "description": "Optional: the registry's schema (URL or inline), echoed for discovery/filtering without fetching the file.",
-            "oneOf": [{ "type": "string", "format": "uri" }, { "type": "object" }]
+        "oneOf": [
+          {
+            "type": "object",
+            "description": "Referenced entry: the DeDi file is hosted at url.",
+            "required": ["registry", "url", "digest"],
+            "additionalProperties": false,
+            "properties": {
+              "registry": { "type": "string", "description": "Registry name." },
+              "url": { "type": "string", "format": "uri", "description": "Absolute URL where the DeDi file is hosted; may be any host the publisher controls, including one different from the manifest's own domain. Authoritative for location: filename and directory conventions are never consulted." },
+              "digest": { "type": "string", "description": "Digest of the referenced DeDi file, so this signed manifest commits to its content and changes are detectable. Prefixed algorithm, e.g. 'sha-256:...'." },
+              "schema": {
+                "description": "Optional: the registry's schema (URL or inline), echoed for discovery/filtering without fetching the file.",
+                "oneOf": [{ "type": "string", "format": "uri" }, { "type": "object" }]
+              },
+              "state": { "type": "string", "enum": ["live", "inactive"], "description": "Optional echo of the registry's state for discovery." }
+            }
           },
-          "state": { "type": "string", "enum": ["live", "inactive"], "description": "Optional echo of the registry's state for discovery." }
-        }
+          {
+            "description": "Inline entry: a complete DeDi file object embedded verbatim — its own proof and embedded key, source_url set to the manifest's well-known URL, no digest (the manifest's signature covers its bytes). Intended for small registries; verification is identical to a hosted file.",
+            "allOf": [{ "$ref": "https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/decentralized-directory-protocol/main/schemas/dedi-file.json" }]
+          }
+        ]
       }
     },
     "proof": {
