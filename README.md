@@ -56,9 +56,9 @@ behalf. The choice of host does not affect verification: a verifier evaluates th
 signature against the key declared at the publisher's well-known, irrespective of which party serves
 the file.
 
-## DeDi Servers
+## DeDi Indexing and Discovery Servers
 
-A DeDi server is a distinct role, not a mode of publisher compliance. It is optional infrastructure
+A DeDi indexing and discovery server is a distinct role is an optional infrastructure
 operated by any party that wishes to serve published files at scale: it discovers and verifies
 published DeDi files, indexes them, and exposes the DeDi API — `/dedi/lookup` and `/dedi/query` —
 across many publishers, adding what static files alone do not provide, such as cross-directory
@@ -79,14 +79,14 @@ DeDi standardizes only *how* a public directory is discovered and verified, so t
 
 These patterns share one interface, so they compose — a membership record can point at a key directory, an agent authenticates against its registered key, and a revocation list gates them all. See **[docs/use-cases.md](docs/use-cases.md)** for the full walkthroughs and **[schemas/](schemas/)** for ready-to-use reference schemas.
 
-## dedi.global – ready to use solution
+## dedi.global – a free to use discovery and publishing infrastructure
 
-For registrars who would rather not host and manage files themselves, a ready-to-use hosted server – dedi.global, is offered by the Network for Humanity Foundation. This philanthropic initiative allows registrars to effortlessly publish and manage their directories on a robust decentralized infrastructure, complementing and fully aligned with the open DeDi protocol. DeDi supports the co-existence of multiple data standards and schemas (e.g., VC JSON-LD, mDocs/mDL). More resources and API tools can be found [here](https://dedi-global.gitbook.io/docs).
+For registrars who would rather not host and manage files themselves, a ready-to-use hosted server – https://dedi.global/ is offered by the Network for Humanity Foundation. This philanthropic initiative allows registrars to effortlessly publish and manage their directories on a robust decentralized infrastructure, complementing and fully aligned with the open DeDi protocol. DeDi supports the co-existence of multiple data standards and schemas (e.g., VC JSON-LD, mDocs/mDL). More resources and API tools can be found [here](https://dedi-global.gitbook.io/docs).
 
 ## Get Started
 
 - **Publish your first directory.** No infrastructure is required: sign a DeDi file, host it on an endpoint you already control, and serve a `/.well-known/dedi.index.json`. Begin with **[docs/publishing-dedi-files.md](docs/publishing-dedi-files.md)** and the **[examples/](examples/)**.
-- **If you would rather not host the files yourself**, claim your namespace on dedi.global and publish your directory there.
+- **If you would rather not host the files yourself**, claim your namespace on https://dedi.global/ and publish your directory there.
 - **Adopt the DeDi Protocol** to look up and query public records in your verification flows, against any publisher's files or any DeDi server.
 - **If you already operate a public registry**, publish its contents as signed DeDi files alongside it — no change to your existing systems is required.
 
