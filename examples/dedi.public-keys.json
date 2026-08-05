@@ -17,7 +17,8 @@
     "name": "public-keys",
     "schema": "https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/decentralized-directory-protocol/main/schemas/public_key.json",
     "state": "live",
-    "updated_at": "2026-07-08T10:00:00Z"
+    "updated_at": "2026-07-08T10:00:00Z",
+    "meta": { "display_name": "Example Org signing keys", "contact": "trust@example.org" }
   },
   "records": [
     {
@@ -28,7 +29,8 @@
         "keyType": "ed25519",
         "keyFormat": "base64",
         "entity": { "name": "Auth Service", "url": "https://example.org/auth" }
-      }
+      },
+      "meta": { "rotation_policy": "https://example.org/policies/key-rotation" }
     },
     {
       "record_name": "signing-service",
