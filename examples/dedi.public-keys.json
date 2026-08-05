@@ -18,6 +18,7 @@
     "schema": "https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/decentralized-directory-protocol/main/schemas/public_key.json",
     "state": "live",
     "updated_at": "2026-07-08T10:00:00Z",
+    "description": "Current signing keys for example.org services",
     "meta": { "display_name": "Example Org signing keys", "contact": "trust@example.org" }
   },
   "records": [

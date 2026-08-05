@@ -136,7 +136,8 @@ or — for a small registry — embedded verbatim in the manifest's `files[]` (s
     "schema": "https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/decentralized-directory-protocol/main/schemas/public_key.json",
     "state": "live",                          // live | inactive
     "updated_at": "2026-07-08T10:00:00Z",     // content last changed, not merely re-issued
-    "meta": { "display_name": "Example Org signing keys" }  // optional free-form metadata
+    "description": "Current signing keys for example.org services",  // optional
+    "meta": { "display_name": "Example Org signing keys" }           // optional free-form metadata
   },
 
   "records": [                                // pure list entries — a name + schema-conformant data
@@ -175,11 +176,13 @@ or — for a small registry — embedded verbatim in the manifest's `files[]` (s
   A DeDi server MUST expose an ingested record at exactly that triple, regardless of which file, host,
   or manifest it was crawled from.
 - **`schema`** is a URL or an inline JSON Schema object, never anchored to a central host.
-- **`meta` is optional and free-form** — an object at the registry level and per record
-  (`records[].meta`), for auxiliary content such as display names, contacts, or references; it
-  mirrors the `meta` field of the DeDi API. It is signed with the rest of the file but carries no
-  verification semantics, and it is not a place for lifecycle or trust data: lifecycle stays at the
-  registry level, and keys and validity stay in the manifest and negative registries.
+- **`description` and `meta` are optional** — available at the registry level and per record.
+  `description` is a human-readable string; `meta` is a free-form object for auxiliary content such
+  as display names, contacts, or references. Both mirror the DeDi API's fields of the same names, so
+  records round-trip between the API and files without loss. They are signed with the rest of the
+  file but carry no verification semantics, and neither is a place for lifecycle or trust data:
+  lifecycle stays at the registry level, and keys and validity stay in the manifest and negative
+  registries.
 - One file = one registry. Splitting a very large registry across multiple files (sharding) is a
   deferred extension, not part of this version.
 
