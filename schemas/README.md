@@ -7,8 +7,10 @@ DeDi is schema-agnostic — a registry can define any record schema that suits i
 | [`public_key.json`](public_key.json) | Active + historical signing keys for an entity, with type/format and rotation history. | [Public key directory](../docs/use-cases.md#1-public-key-directory) |
 | [`revoke.json`](revoke.json) | A revocation / negative list — revoked, blacklisted, or sanctioned identifiers with a reason. | [Revocation & negative lists](../docs/use-cases.md#2-revocation--negative-lists) |
 | [`membership.json`](membership.json) | Affiliation of a person/entity to a body — club, consortium, licensor, or citizenship — with a validity window. | [Membership & affiliation](../docs/use-cases.md#3-membership--affiliation) |
-| [`Beckn_subscriber.json`](Beckn_subscriber.json) | An open-network participant (BAP/BPP/BG/CDS): endpoints, domain, countries, and keys. | Open-network participant discovery |
+| [`Beckn_subscriber.json`](Beckn_subscriber.json) | An open-network participant (BAP/BPP/CS/DS/CDS): endpoints, countries, and keys. | Open-network participant discovery |
 | [`Beckn_subscriber_reference.json`](Beckn_subscriber_reference.json) | A pointer to subscriber records/registries held elsewhere, enabling federation across operators. | Open-network participant discovery |
+| [`public_data_set.json`](public_data_set.json) | A public dataset — inline or referenced by URL with checksum integrity. | [Policy & rule registries](../docs/use-cases.md#4-policy--rule-registries) |
+| [`public_rule_set.json`](public_rule_set.json) | A public ruleset — machine-readable rules, inline or referenced by URL with checksum integrity. | [Policy & rule registries](../docs/use-cases.md#4-policy--rule-registries) |
 
 ## Using a schema
 
@@ -22,4 +24,4 @@ See the [API specification](../api/openapi.yaml) for the full Lookup, Query, and
 
 ## Contributing a schema
 
-New reference schemas are welcome for trust patterns not yet covered (for example, policy/rule registries or AI-agent registries). Keep them minimal and composable — prefer pointing at other DeDi records (e.g. a `publicKey` field that references a key-directory entry) over duplicating data. Open an issue or PR to propose one.
+New reference schemas are welcome for trust patterns not yet covered (for example, AI-agent registries). Keep them minimal and composable — prefer pointing at other DeDi records (e.g. a `publicKey` field that references a key-directory entry) over duplicating data. Open an issue or PR to propose one.

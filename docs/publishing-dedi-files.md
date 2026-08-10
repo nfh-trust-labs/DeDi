@@ -401,7 +401,8 @@ central host. Three practical forms:
 ```
 
 The protocol **declares a small canonical set** in this repo's `schemas/` directory — `public_key`,
-`revoke`, `membership` — which a DeDi file references by its raw URL. Everyone else uses an external
+`revoke`, `membership`, `beckn_subscriber`, `beckn_subscriber_reference`, `public_data_set`,
+`public_rule_set` — which a DeDi file references by its raw URL. Everyone else uses an external
 URL or inlines their own.
 
 > **Temporary — pin before release.** The canonical URLs above point at the `main` branch

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Beckn Subscriber",
-  "description": "A registry entry describing endpoints and keys of a beckn network participant (BAP/BPP/CDS).",
+  "description": "A registry entry describing endpoints and keys of a beckn network participant.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -12,16 +12,16 @@
     "url": {
       "type": "string",
       "format": "uri",
-      "description": "Specifies the callback URL of the subscriber. It must share the same domain as subscriber_id."
+      "description": "Specifies the callback URL of the subscriber."
     },
     "type": {
       "type": "string",
-      "description": "Type of role played in the network.",
-      "enum": ["BAP", "BPP", "BG", "CDS"]
+      "description": "Type of role played in the network (Beckn Application Provider, Beckn Platform Provider, Catalogue Service, Discovery Service)",
+      "enum": ["BAP", "BPP", "CS", "DS", "CDS"]
     },
     "domain": {
       "type": "string",
-      "description": "Operating industry domain that this subscriber offers its products or services in. A single subscriber can operate in multiple domains and each can be added as a separate record."
+      "description": "Operating industry domain that this subscriber offers its products or services in. A single subscriber can operate in multiple domains and each can be added as a separate record. This field is deprecated and will be removed from the registry."
     },
     "countries": {
       "type": "array",
@@ -74,7 +74,6 @@
     "url",
     "type",
     "countries",
-    "domain",
     "signing_public_key"
   ]
 }
