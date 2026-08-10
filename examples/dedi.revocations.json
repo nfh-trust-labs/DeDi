@@ -15,7 +15,7 @@
   "namespace": "example.org",
   "registry": {
     "name": "revocations",
-    "schema": "https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/decentralized-directory-protocol/main/schemas/revoke.json",
+    "schema": "https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/decentralized-directory-protocol/main/schemas/Revoke.json",
     "state": "live",
     "updated_at": "2026-07-08T18:30:00Z"
   },

@@ -133,7 +133,7 @@ or — for a small registry — embedded verbatim in the manifest's `files[]` (s
   "namespace": "example.org",                 // → {namespace} in /dedi/lookup (usually the domain)
   "registry": {
     "name": "public-keys",                    // → {registry_name}
-    "schema": "https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/decentralized-directory-protocol/main/schemas/public_key.json",
+    "schema": "https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/decentralized-directory-protocol/main/schemas/Public_key.json",
     "state": "live",                          // live | inactive
     "updated_at": "2026-07-08T10:00:00Z"      // content last changed, not merely re-issued
   },
@@ -243,10 +243,10 @@ files. It is signed, and served under the domain's TLS at the well-known path (R
   "files": [                                  // the registries offered — discovery + change-detection
     { "registry": "public-keys", "url": "https://example.org/dedi/dedi.public-keys.json",
       "digest": "sha-256:9f2c1d4e7a8b0c3d5e6f70819293a4b5c6d7e8f90a1b2c3d4e5f60718293aebae",
-      "schema": "https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/decentralized-directory-protocol/main/schemas/public_key.json" },
+      "schema": "https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/decentralized-directory-protocol/main/schemas/Public_key.json" },
     { "registry": "revocations", "url": "https://example.org/dedi/dedi.revocations.json",
       "digest": "sha-256:5b1a2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f0",
-      "schema": "https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/decentralized-directory-protocol/main/schemas/revoke.json" }
+      "schema": "https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/decentralized-directory-protocol/main/schemas/Revoke.json" }
   ],
 
   "proof": {                                  // signed by one of `keys`; same signing rules
@@ -395,20 +395,21 @@ A registry's `schema` is **either a URL or an inline JSON Schema object**. It is
 central host. Three practical forms:
 
 ```jsonc
-"schema": "https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/decentralized-directory-protocol/main/schemas/public_key.json"  // a protocol-declared schema
+"schema": "https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/decentralized-directory-protocol/main/schemas/Public_key.json"  // a protocol-declared schema
 "schema": "https://example.org/schemas/my_registry.json"  // any external URL the publisher controls
 "schema": { "type": "object", "required": ["id"], "properties": { "id": { "type": "string" } } }  // inline — fully self-contained
 ```
 
-The protocol **declares a small canonical set** in this repo's `schemas/` directory — `public_key`,
-`revoke`, `membership` — which a DeDi file references by its raw URL. Everyone else uses an external
+The protocol **declares a small canonical set** in this repo's `schemas/` directory — `Public_key`,
+`Revoke`, `Membership`, `beckn_subscriber`, `beckn_subscriber_reference`, `Public-Data-Set`,
+`Public_Rule_Set` — which a DeDi file references by its raw URL. Everyone else uses an external
 URL or inlines their own.
 
 > **Temporary — pin before release.** The canonical URLs above point at the `main` branch
 > (`.../main/schemas/...`), which is **mutable**: editing a schema on `main` would silently change the
 > meaning of every DeDi file that references it. Before this spec is released, these MUST be pinned to
 > an immutable ref — a version tag or commit SHA, e.g.
-> `.../decentralized-directory-protocol/v0.1/schemas/public_key.json`. `main` is a draft placeholder only.
+> `.../decentralized-directory-protocol/v0.1/schemas/Public_key.json`. `main` is a draft placeholder only.
 
 Each canonical schema's own `$id` is set to its raw repo URL, so a schema's identity and its location
 agree.

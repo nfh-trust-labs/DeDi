@@ -28,9 +28,9 @@ Each pattern maps to one of the three **trust pillars** (see the [Appendix in th
 
 | Use case | The question it answers | Publisher | Primary pillar | Schema |
 | :-- | :-- | :-- | :-- | :-- |
-| [Public key directory](#1-public-key-directory) | Is this the real signing key for this issuer — right now? | CAs, issuers, wallets | Authenticity | [`public_key.json`](../schemas/public_key.json) |
-| [Revocation & negative lists](#2-revocation--negative-lists) | Has this credential / entity been revoked, sanctioned, or blacklisted? | Regulators, issuers, boards | Validity | [`revoke.json`](../schemas/revoke.json) |
-| [Membership & affiliation](#3-membership--affiliation) | Is this party genuinely a member / accredited / in good standing? | Associations, consortia, licensors | Authenticity + Validity | [`membership.json`](../schemas/membership.json) |
+| [Public key directory](#1-public-key-directory) | Is this the real signing key for this issuer — right now? | CAs, issuers, wallets | Authenticity | [`Public_key.json`](../schemas/Public_key.json) |
+| [Revocation & negative lists](#2-revocation--negative-lists) | Has this credential / entity been revoked, sanctioned, or blacklisted? | Regulators, issuers, boards | Validity | [`Revoke.json`](../schemas/Revoke.json) |
+| [Membership & affiliation](#3-membership--affiliation) | Is this party genuinely a member / accredited / in good standing? | Associations, consortia, licensors | Authenticity + Validity | [`Membership.json`](../schemas/Membership.json) |
 | [Policy & rule registries](#4-policy--rule-registries) | What are the current, machine-readable rules I must apply? | Regulators, standards bodies | Validity | configurable |
 | [AI agent registries](#5-ai-agent-registries) | Is this autonomous agent an approved, identifiable actor? | Enterprises, platforms | Authenticity | configurable |
 
