@@ -183,6 +183,7 @@ or — for a small registry — embedded verbatim in the manifest's `files[]` (s
   file but carry no verification semantics, and neither is a place for lifecycle or trust data:
   lifecycle stays at the registry level, and keys and validity stay in the manifest and negative
   registries.
+  The manifest likewise MAY carry a `description` — the namespace-level equivalent.
 - One file = one registry. Splitting a very large registry across multiple files (sharding) is a
   deferred extension, not part of this version.
 
@@ -241,6 +242,7 @@ files. It is signed, and served under the domain's TLS at the well-known path (R
   "type": "dedi-manifest",                    // optional
   "domain": "example.org",                    // self-identifies a relayed copy; verify checks served host == this
   "name": "Example Org Trust Services",       // optional
+  "description": "Trust registries of Example Org",  // optional
 
   "keys": [                                   // ← THE AUTHORITY. current signing key(s); presence = valid.
     { "kid": "key-1", "kty": "OKP", "crv": "Ed25519", "x": "11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo" }
