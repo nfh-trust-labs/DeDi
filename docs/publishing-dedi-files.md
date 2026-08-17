@@ -185,14 +185,14 @@ them. The following are therefore **conventions, not conformance requirements** 
 host offers no control over paths or filenames, such as a public file-sharing service that serves
 opaque URLs, remains fully conformant without them.
 
-**Filename — `dedi.<registry-name>.json` RECOMMENDED.** The `.json` suffix is what makes the file
+**Filename — `<registry-name>.json` RECOMMENDED.** The `.json` suffix is what makes the file
 serve correctly: web servers map file extensions to `Content-Type`, and an unregistered extension is
 served as `application/octet-stream`, which browsers download rather than parse and strict clients
-reject. The `dedi.` prefix marks the file as a DeDi file and makes the set matchable by one glob
-(`dedi.*.json`) in a repository, a mirror, or a server's ingest filter; the registry name in the
-filename lets a crawler fetch only the registries it needs. The manifest carries the same prefix —
-`dedi.index.json`, matching its well-known path. None of this is a discovery mechanism: the web
-cannot enumerate files by name.
+reject; naming the file after its registry keeps a publisher's set administrable. A publisher MAY
+additionally prefix filenames with `dedi.` (as the examples in this repository do) to make the set
+matchable by one glob (`dedi.*.json`) in a repository, a mirror, or a server's ingest filter. The
+manifest's own filename is fixed by its well-known path: `dedi.index.json`. None of this is a
+discovery mechanism: the web cannot enumerate files by name.
 
 **Path — a `/dedi/` directory RECOMMENDED.** Grouping a publisher's files under one directory keeps
 them administrable and gives a single place to scope the HTTP headers below:
