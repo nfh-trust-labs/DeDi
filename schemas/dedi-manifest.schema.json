@@ -11,6 +11,7 @@
     "type": { "type": "string", "const": "dedi-manifest", "description": "Optional discriminator." },
     "domain": { "type": "string", "description": "The publisher domain. Self-identifies a relayed copy; a verifier checks that the serving host matches this." },
     "name": { "type": "string", "description": "Optional human label." },
+    "description": { "type": "string", "description": "Optional human-readable description of the publisher/namespace. Mirrors the DeDi API's namespace description field." },
     "keys": {
       "type": "array",
       "description": "The publisher's current signing key(s) as RFC 7517 JWKs. Presence in this array = valid. Rotation adds/removes; revocation removes.",

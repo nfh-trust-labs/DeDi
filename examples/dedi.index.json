@@ -3,6 +3,7 @@
   "type": "dedi-manifest",
   "domain": "example.org",
   "name": "Example Org Trust Services",
+  "description": "Trust registries of Example Org",
   "keys": [
     { "kid": "key-1", "kty": "OKP", "crv": "Ed25519", "x": "11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo" }
   ],

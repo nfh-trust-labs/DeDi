@@ -46,7 +46,9 @@
           "oneOf": [{ "type": "string", "format": "uri" }, { "type": "object" }]
         },
         "state": { "type": "string", "enum": ["live", "inactive"], "description": "Whole-registry lifecycle. 'inactive' retires the directory; treat as not authoritative." },
-        "updated_at": { "type": "string", "format": "date-time", "description": "When the registry's content last actually changed (distinct from a re-issue for freshness)." }
+        "updated_at": { "type": "string", "format": "date-time", "description": "When the registry's content last actually changed (distinct from a re-issue for freshness)." },
+        "description": { "type": "string", "description": "Optional human-readable description of the registry. Mirrors the DeDi API's description field." },
+        "meta": { "type": "object", "description": "Optional free-form metadata about the registry. Signed with the rest of the document; carries no verification semantics. Not a place for lifecycle or trust data." }
       }
     },
     "records": {
@@ -58,7 +60,9 @@
         "additionalProperties": false,
         "properties": {
           "record_name": { "type": "string", "description": "Record name; maps to {record_name}. MUST be unique within the registry — duplicates make the file invalid. Case-sensitive; no character-set restriction; percent-encoded when used in a URL path. A record is addressed as {namespace}/{registry_name}/{record_name}." },
-          "details": { "type": "object", "description": "The schema-conformant payload; same field as the DeDi API Record.details." }
+          "details": { "type": "object", "description": "The schema-conformant payload; same field as the DeDi API Record.details." },
+          "description": { "type": "string", "description": "Optional human-readable description of the record. Mirrors the DeDi API's description field." },
+          "meta": { "type": "object", "description": "Optional free-form metadata about the record. Signed with the rest of the document; carries no verification semantics. Not a place for lifecycle or trust data — lifecycle stays at the registry level." }
         }
       }
     },
